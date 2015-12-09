@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = function(grunt) {
 
   grunt.initConfig({
@@ -35,35 +37,29 @@ module.exports = function(grunt) {
     },
 
     copy: {
-      jquery: {
-        cwd: 'bower_components/jquery/dist/',
-        src: 'jquery.min.js',
-        dest: 'app/assets/js',    // destination folder
-        expand: true
-      },
-      bootstrap: {
-        cwd: 'bower_components/bootstrap-sass/assets/javascripts',
-        src: 'bootstrap.min.js',
-        dest: 'app/assets/js',    // destination folder
-        expand: true
-      },
-      bootstrap_all: {
-        cwd: 'bower_components/bootstrap-sass/assets/stylesheets/bootstrap',
-        src: '**/*',
-        dest: 'app/assets/style/bootstrap',    // destination folder
-        expand: true
-      },
-      bootstrap_css: {
-        cwd: 'bower_components/bootstrap-sass/assets/stylesheets',
-        src: '_bootstrap.scss',
-        dest: 'app/assets/style/',    // destination folder
-        expand: true
-      },
-      bootstrap_fonts: {
-        cwd: 'bower_components/bootstrap-sass/assets/fonts',
-        src: '**/*',
-        dest: 'dist/fonts',    // destination folder
-        expand: true
+      main:{
+        files: [
+          //jquery
+          {cwd: 'bower_components/jquery/dist/', src: 'jquery.min.js', dest: 'app/assets/js/vendors',  expand: true},
+          //bootstrap js
+          {cwd: 'bower_components/bootstrap-sass/assets/javascripts', src: 'bootstrap.min.js', dest: 'app/assets/js/vendors', expand: true},
+          //bootstrap all css and mixins
+          {cwd: 'bower_components/bootstrap-sass/assets/stylesheets/bootstrap', src: '**/*', dest: 'app/assets/style/bootstrap', expand: true},
+          //bootstrap css base
+          {cwd: 'bower_components/bootstrap-sass/assets/stylesheets', src: '_bootstrap.scss', dest: 'app/assets/style/', expand: true},
+          //bootstrap fonts
+          {cwd: 'bower_components/bootstrap-sass/assets/fonts', src: '**/*', dest: 'dist/fonts', expand: true},
+          //angular
+          {cwd: 'bower_components/angular', src: 'angular.min.js', dest: 'app/assets/js/vendors', expand: true},
+          //angular messages
+          {cwd: 'bower_components/angular-messages', src: 'angular-messages.min.js', dest: 'app/assets/js/vendors', expand: true},
+          //angular route
+          {cwd: 'bower_components/angular-route', src: 'angular-route.min.js', dest: 'app/assets/js/vendors', expand: true},
+          //angular sanitize
+          {cwd: 'bower_components/angular-sanitize', src: 'angular-sanitize.min.js', dest: 'app/assets/js/vendors', expand: true},
+          //angular touch
+          {cwd: 'bower_components/angular-touch', src: 'angular-touch.min.js', dest: 'app/assets/js/vendors', expand: true}
+        ]
       }
     },
 
@@ -77,8 +73,21 @@ module.exports = function(grunt) {
       app: {
         files: {
           'dist/js/app.min.js': [
-            'app/assets/js/jquery.min.js',
-            'app/assets/js/bootstrap.min.js',
+            //vendors
+            'app/assets/js/vendors/jquery.min.js',
+            'app/assets/js/vendors/bootstrap.min.js',
+            'app/assets/js/vendors/angular.min.js',
+            'app/assets/js/vendors/angular-messages.min.js',
+            'app/assets/js/vendors/angular-route.min.js',
+            'app/assets/js/vendors/angular-sanitize.min.js',
+            'app/assets/js/vendors/angular-touch.min.js',
+            //angular app
+            'app/assets/js/app.js',
+            //angular controllers
+            //'app/assets/js/controller/controller.js',
+            //angular directives
+            //'app/assets/js/controller/directive.js',
+            
           ]
         }
       }
@@ -138,25 +147,22 @@ module.exports = function(grunt) {
         }
       }
     },
-    /*jsObfuscate: {
-      test: {
+
+    // Make sure there are no obvious mistakes
+    jshint: {
         options: {
-          concurrency: 2,
-          keepLinefeeds: false,
-          keepIndentations: false,
-          encodeStrings: true,
-          encodeNumbers: true,
-          moveStrings: true,
-          replaceNames: true,
-          variableExclusions: [ '^_get_', '^_set_', '^_mtd_' ]
+            jshintrc: '.jshintrc',
+            reporter: require('jshint-stylish'),
+            ignores: ['app/assets/js/vendors/*.js']
         },
-        files: {
-          'theme/scripts/main.min.js': [
-            'theme/scripts/main.js'
-          ]
+        all: {
+            src: [
+                'Gruntfile.js',
+                'app/assets/js/{,*/}*.js'
+            ]
         }
-      }
-    },*/
+    },
+
     watch: {
       sass: {
         files: ['app/assets/style/app.scss','app/assets/style/**', 'app/assets/style/*/**'],
@@ -173,8 +179,8 @@ module.exports = function(grunt) {
         }
       },
       uglify: {
-        files: ['app/views/js/**'],
-        tasks: ['jsObfuscate', 'uglify' ],
+        files: ['app/assets/js/*/**','app/assets/js/**'],
+        tasks: ['newer:jshint:all', 'uglify'],
         options: {
           livereload: true,
         }
@@ -193,9 +199,9 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-imagemin');
   grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-copy');
-  grunt.loadNpmTasks('js-obfuscator');
   grunt.loadNpmTasks('grunt-newer');
   grunt.loadNpmTasks('grunt-sass');
 
@@ -210,7 +216,6 @@ module.exports = function(grunt) {
     'assemble',
     'copy',
     'imagemin',
-    //'jsObfuscate',
     'uglify'
   ]);
 
@@ -219,4 +224,4 @@ module.exports = function(grunt) {
     'connect',
     'watch'
   ]);
-}
+};

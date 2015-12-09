@@ -10,8 +10,9 @@
     "grunt-contrib-imagemin": "^1.0.0",
     "grunt-contrib-uglify": "^0.7.0",
     "grunt-contrib-watch": "~0.5.3",
+    "grunt-contrib-jshint": "^0.11.0",
     "grunt-newer": "^1.1.0",
     "grunt-sass": "~1.0.0",
-    "js-obfuscator": "^0.1.1"
+    "jshint-stylish": "^1.0.0"
   }
 }
